@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{order.emergency}">EM Orders</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</head>
+<style>
+  @font-face {
+    font-family: 'Chosunilbo_myungjo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  *{
+    font-family: 'Chosunilbo_myungjo', sans-serif;
+  }
+  .clickable{
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+  }
+</style>
+<body>
+<main class="user-select-none">
+  <div class="w-75 mx-auto row mt-5 text-center" id="mainPane">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="mt-3">
+        <h2 th:text="#{order.emergency}">응급 처리건</h2>
+      </div>
+      <div class="d-flex gap-3">
+        <div class="btn btn-outline-secondary clickable" onclick="window.location.reload()"><i class="fa-solid fa-refresh fa-xl clickable"></i></div>
+
+        <div class="btn btn-outline-secondary clickable" onclick="window.location.href='/home'"><i class="fa-solid fa-angle-left"></i></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</body>
+<script th:inline="javascript">
+  const emDataString = /*[[${em}]]*/ "";
+  const emData = JSON.parse(emDataString);
+  const main = document.getElementById('mainPane');
+
+  const msgDeliveryId = /*[[#{order.emergency.detail.deliveryID}]]*/ "배송 ID";
+  const msgOrderId = /*[[#{order.emergency.detail.orderID}]]*/ "오더 ID";
+  const msgDistance = /*[[#{order.emergency.detail.distance}]]*/ "거리";
+  const msgDestination = /*[[#{order.emergency.detail.destination}]]*/ "목적지";
+  const msgCenterName = /*[[#{order.emergency.detail.centerName}]]*/ "센터 이름";
+  const msgDeliveryType = /*[[#{order.emergency.detail.deliveryType}]]*/ "배달 타입";
+  const msgDeliveryStatus = /*[[#{order.emergency.detail.status}]]*/ "배송 상태";
+
+  emData.forEach(em => {
+    main.innerHTML += `
+      <div class="col-lg-3 col-md-6 gap-2 my-3">
+        <div class="card">
+          <div class="card-header text-danger-emphasis"><i class="fa-solid fa-bell"></i></div>
+          <div class="card-body text-light-emphasis">
+            <p>${msgDeliveryId} : ${em.deliveryId}</p>
+            <p>${msgOrderId} : ${em.orderId}</p>
+            <p>${msgDistance} : ${em.distance}</p>
+            <p>${msgDestination} : ${em.destination}</p>
+            <p>${msgCenterName} : ${em.centerName}</p>
+            <p>${msgDeliveryType} : ${em.deliveryType}</p>
+            <p>${msgDeliveryStatus} : ${em.deliveryStatus}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+</script>
+
+</html>

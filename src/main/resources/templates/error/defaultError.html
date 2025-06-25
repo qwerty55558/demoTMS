@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+</body>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  window.onload = function (){
+    const message = /*[[${errorMessage}]]*/ '';
+    if (message) {
+      alert(message);
+    }
+    window.location.href = /*[[@{/home}]]*/'';
+  }
+  /*]]>*/
+</script>
+</html>

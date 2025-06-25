@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</head>
+<style>
+    @font-face {
+        font-family: 'Chosunilbo_myungjo';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    *{
+        font-family: 'Chosunilbo_myungjo', sans-serif;
+    }
+
+    .list-img{
+        max-width: 100%;
+        max-height: 200px; /* 원하는 최대 높이로 설정 */
+        object-fit: cover; /* 이미지가 카드에 맞게 조정되도록 설정 */
+    }
+    .clickable {
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .clickable.size {
+        height: fit-content;
+        width: fit-content;
+    }
+    .item-list{
+        height: fit-content;
+        width: fit-content;
+    }
+    .list-hr{
+        color: #555555;
+    }
+</style>
+<body>
+
+<main class="d-flex flex-column vh-100 user-select-none">
+    <div class="mt-5 w-75 mx-auto text-end">
+        <a class="clickable size mx-1" onclick="clearItem()"><i id="clearIcon" class="fa-solid fa-trash fa-xl"></i></a>
+        <a class="clickable size mx-1" onclick="previousPage()"><i class="fa-solid fa-arrow-left fa-xl"></i></a>
+    </div>
+    <div id="itemListContainer" class="my-3 p-3 bg-body rounded shadow list-group w-75 mx-auto">
+
+    </div>
+    <div class="my-3 mb-5 p-3 bg-body rounded shadow w-75 mx-auto d-flex flex-column text-center">
+        <div id="priceBox" class="fs-4"></div>
+        <button class="btn btn-primary mx-auto w-50 mt-3" onclick="orderItem()" th:text="#{order}">주문하기</button>
+    </div>
+</main>
+</body>
+<script th:inline="javascript">
+    const cart = /*[[${cart}]]*/ '[]';
+    let totalPrice =  /*[[${totalPrice}]]*/ '';
+    const itemListContainer = document.getElementById('itemListContainer');
+    const priceBox = document.getElementById('priceBox');
+    const clearIcon = document.getElementById('clearIcon');
+    let modifiedData = [];
+
+    const msgConfirmDelete = /*[[#{confirm.delete}]]*/ '';
+    const msgConfirmDeleteCart = /*[[#{confirm.delete.cart}]]*/ '';
+    const msgConfirmCart = /*[[#{confirm.cart}]]*/ '';
+
+    window.onload = function () {
+        cart.forEach((item, index) => {
+            if (item.imgSrc == null) {
+                item.imgSrc = '/asset/no-image.jpg';
+            }
+            const list = `
+            <div class="list-group-item my-3 border-0" aria-current="true" data-id="${item.id}" data-quantity="${item.quantity}" data-price="${item.price}">
+                <div class="d-flex w-100 justify-content-evenly flex-column flex-md-row text-center">
+                    <img src="${item.imgSrc}" class="img-fluid list-img rounded-3" alt="..." onerror="this.onerror=null;this.src='/asset/no-image.jpg'">
+                    <span class="mb-1 fs-2">${item.name}</span>
+                    <div class="d-flex p-1 flex-row align-items-center text-center rounded-4 bg-body-secondary item-list">
+                        <a class="clickable size" onclick="minusItem(this.closest('.list-group-item'))"><i class="fa-solid fa-minus fa-lg ms-1"></i></a>
+                        <span class="fs-5 mx-3 quantity-span">${item.quantity}</span>
+                        <a class="clickable size" onclick="plusItem(this.closest('.list-group-item'))"><i class="fa-solid fa-plus fa-lg me-1"></i></a>
+                    </div>
+                </div>
+                <p class="mb-1 mt-3 text-center">${item.description}</p>
+            </div>
+        `;
+            itemListContainer.insertAdjacentHTML("beforeend", list);
+            if (index !==  cart.length - 1) {
+                itemListContainer.insertAdjacentHTML("beforeend", '<hr class="my-3 w-75 mx-auto list-hr">');
+            }
+        });
+        priceBox.textContent = totalPrice;
+    };
+
+    window.addEventListener('beforeunload',sendModifiedData);
+
+    function plusItem(itemNode) {
+        itemNode.dataset.quantity++;
+        itemNode.querySelector('.quantity-span').textContent = itemNode.dataset.quantity;
+        priceBox.textContent = (Number(priceBox.textContent) + Number(itemNode.dataset.price)).toString();
+        updateCartData(itemNode);
+    }
+
+    function minusItem(itemNode) {
+        if (itemNode.dataset.quantity > 1) {
+            itemNode.dataset.quantity--;
+            itemNode.querySelector('.quantity-span').textContent = itemNode.dataset.quantity;
+            priceBox.textContent = (Number(priceBox.textContent) - Number(itemNode.dataset.price)).toString();
+        }else{
+            if (confirm(msgConfirmDelete)) {
+                itemNode.dataset.quantity = '0';
+                priceBox.textContent = (Number(priceBox.textContent) - Number(itemNode.dataset.price)).toString();
+                itemNode.remove();
+            }
+        }
+        updateCartData(itemNode);
+    }
+
+    function updateCartData(itemNode){
+        const data = {
+            id: itemNode.dataset.id,
+            quantity: itemNode.dataset.quantity
+        };
+
+        // 동일한 id를 가진 항목이 있는지 확인
+        const index = modifiedData.findIndex(item => item.id === data.id);
+
+        if (index !== -1) {
+            // 기존 항목 업데이트
+            modifiedData[index].quantity = data.quantity;
+        } else {
+            // 새로운 항목 추가
+            modifiedData.push(data);
+        }
+
+        console.log(modifiedData);
+    }
+
+    function clearItem() {
+        if (confirm(msgConfirmDeleteCart)) {
+            const itemNodes = itemListContainer.querySelectorAll('.list-group-item');
+            itemNodes.forEach(itemNode => {
+                itemNode.dataset.quantity = '0';
+                itemNode.remove();
+            });
+            priceBox.textContent = '0';
+            fetch('/api/cart/clear', {
+                method: 'GET'
+            });
+            previousPage();
+        }
+    }
+
+    function previousPage() {
+        window.history.back();
+    }
+
+    function orderItem() {
+        if (confirm(msgConfirmCart)) {
+            sendModifiedData();
+            window.location.href = '/checkout';
+        }
+    }
+
+    function sendModifiedData() {
+        if (modifiedData.length > 0) {
+            const blob = new Blob([JSON.stringify(modifiedData)], {type: 'application/json'});
+            navigator.sendBeacon('/api/cart/fetch', blob);
+        }
+    }
+
+
+</script>
+</html>

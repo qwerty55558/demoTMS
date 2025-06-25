@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-mail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: #1428a0;
+      padding: 20px;
+      text-align: center;
+    }
+    .header img {
+      width: 150px;
+    }
+    .content {
+      padding: 20px;
+      text-align: left;
+      color: #333;
+    }
+    .content h1 {
+      color: #1428a0;
+      font-size: 24px;
+    }
+    .content p {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .footer {
+      background: #eee;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
+    .footer a {
+      color: #1428a0;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      color: #fff;
+      background: #1428a0;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    .button:hover {
+      background: #0d1d78;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- 헤더 -->
+  <div class="header">
+    <img width="300px" height="200px" src="https://images.unsplash.com/photo-1585713181935-d5f622cc2415?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="demoTMS">
+  </div>
+
+  <!-- 본문 내용 -->
+  <div class="content">
+    <h1 th:text="${title}">이메일 제목</h1>
+    <p th:text="${message}">
+    </p>
+    <a th:href="${link}" class="button">자세히 보기</a>
+  </div>
+
+  <!-- 푸터 -->
+  <div class="footer">
+    <p>ⓒ 2025 demoTMS. All Rights Reserved.</p>
+    <p><a href="https://www.samsung.com">공식 웹사이트</a> | <a href="https://www.samsung.com/sec/support/">고객 지원</a></p>
+  </div>
+</div>
+</body>
+</html>

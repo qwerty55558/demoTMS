@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{order}">CheckOut</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="/css/kakaoAPI.css" rel="stylesheet" type="text/css"/>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</head>
+<style>
+    @font-face {
+        font-family: 'Chosunilbo_myungjo';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    *{
+        font-family: 'Chosunilbo_myungjo', sans-serif;
+    }
+
+    .field-error{
+        color: #dc3545;
+    }
+</style>
+<body>
+    <main class="d-flex flex-column user-select-none vh-100">
+        <div class="w-75 mx-auto text-white">
+                <div class="py-5 text-center">
+                    <img class="d-block mx-auto mb-4 rounded-3" src="/asset/ValidHomeIcon.png" alt="" width="72" height="57">
+                    <h2 th:text="#{checkout}">Checkout</h2>
+                </div>
+                <div class="row g-5 pb-4">
+                    <div class="col-md-5 col-lg-4 order-md-last">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-primary" th:text="#{cart}">Your cart</span>
+                            <span id="cartSize" class="badge bg-primary rounded-pill">3</span>
+                        </h4>
+                        <ul id="itemListContainer" class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span th:text="#{order.price}">Total</span>
+                                <strong id="totalPrice"></strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-7 col-lg-8">
+                        <h4 class="mb-3">Billing address</h4>
+                        <form novalidate th:object="${user}" th:action="@{/order}" method="post">
+                            <div th:if="${#fields.hasGlobalErrors()}">
+                                <p class="field-error fw-bold fs-2" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label for="firstName" class="form-label" th:text="#{firstName}">First name</label>
+                                    <input type="text" class="form-control" id="firstName" th:field="*{firstName}" th:errorclass="is-invalid" placeholder="" value="">
+                                    <div th:errors="*{firstName}" class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="lastName" class="form-label" th:text="#{lastName}">Last name</label>
+                                    <input type="text" class="form-control" id="lastName" th:field="*{lastName}" th:errorclass="is-invalid" placeholder="" value="">
+                                    <div th:errors="*{lastName}" class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="username" class="form-label" th:text="#{email}">Username</label>
+                                    <div class="input-group has-validation">
+                                        <span class="input-group-text">@</span>
+                                        <input type="text" class="form-control" id="username" th:field="*{email}" th:errorclass="is-invalid" placeholder="Username">
+                                        <div th:errors="*{email}" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="address" class="form-label" th:text="#{checkout.address}">Address</label>
+                                    <input type="text" class="form-control" id="address" th:field="*{address}" th:errorclass="is-invalid" placeholder="1234 Main St" readonly data-bs-toggle="modal" data-bs-target="#mapModal">
+                                    <div th:errors="*{address}" class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="address2" class="form-label" th:text="#{checkout.address2}">Address 2 <span class="text-body-secondary">(Optional)</span></label>
+                                    <input type="text" class="form-control" id="address2" th:field="*{address2}" placeholder="Apartment or suite">
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <h4 class="mb-3" th:text="#{checkout.payment}">Payment</h4>
+
+                            <div class="my-3">
+                                <div class="form-check">
+                                    <input id="credit" name="paymentMethod" type="radio" class="form-check-input" th:field="*{payment.type}" th:errorclass="is-invalid" value="CreditCard">
+                                    <label class="form-check-label" for="credit">Credit card</label>
+                                </div>
+                                <div class="form-check">
+                                    <input id="debit" name="paymentMethod" type="radio" class="form-check-input" th:field="*{payment.type}" th:errorclass="is-invalid" value="DebitCard">
+                                    <label class="form-check-label" for="debit">Debit card</label>
+                                </div>
+                                <div class="form-check">
+                                    <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" th:field="*{payment.type}" th:errorclass="is-invalid" value="PayPal">
+                                    <label class="form-check-label" for="paypal">PayPal</label>
+                                </div>
+                                <div th:errors="*{payment.type}" class="invalid-feedback"></div>
+                            </div>
+
+                            <div class="row gy-3">
+                                <div class="col-md-12">
+                                    <label for="cc-number" class="form-label" th:text="#{checkout.payment.creditCard}">Credit card number</label>
+                                    <input type="text" class="form-control" id="cc-number" placeholder="" th:field="*{payment.number}" th:errorclass="is-invalid">
+                                    <div th:errors="*{payment.number}" class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="cc-expiration" class="form-label" th:text="#{checkout.payment.expiration}">Expiration</label>
+                                    <input type="text" class="form-control" id="cc-expiration" placeholder="" th:field="*{payment.expireDate}" th:errorclass="is-invalid">
+                                    <div th:errors="*{payment.expireDate}" class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="cc-cvv" class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cc-cvv" placeholder="" th:field="*{payment.CVV}" th:errorclass="is-invalid">
+                                    <div th:errors="*{payment.CVV}" class="invalid-feedback"></div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+                            <input type="hidden" id="xAddress" th:field="*{xAddress}">
+                            <input type="hidden" id="yAddress" th:field="*{yAddress}">
+
+                            <button class="w-100 btn btn-primary btn-lg" type="submit" th:text="#{order}">Continue to checkout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </main>
+    <div id="mapModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="#{checkout.search.address}">주소 검색</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex align-items-start">
+                    <label for="keyword"></label>
+                    <input type="text" id="keyword" class="w-75 mx-auto" placeholder="Search Place..." />
+                </div>
+                <div id="modalMapContainer" class="modal-footer map-wrap" style="width:100%;height:600px;position:relative;overflow:hidden;">
+                </div>
+                <div id="menu_wrap">
+                    <div class="option">
+                        <div>
+                            <ul id="placesList"></ul>
+                            <div id="pagination"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=79e2af58c37660b514b3aa8c1ee14d43&libraries=services,clusterer,drawing"></script>
+<script th:inline="javascript">
+
+    const cart = /*[[${cart}]]*/ [];
+    const totalPrice = /*[[${totalPrice}]]*/ '';
+    const totalPriceElement = document.getElementById('totalPrice');
+    const itemListContainer = document.getElementById('itemListContainer');
+    const cartSizeElement = document.getElementById('cartSize');
+
+    const msgKeyword = /*[[#{alert.keyword}]]*/ '';
+    const msgNoResult = /*[[#{alert.noResult}]]*/ '';
+    const msgError = /*[[#{alert.error}]]*/ '';
+
+    const mapModal = document.getElementById('mapModal');
+    let modalMapContainer = document.getElementById('modalMapContainer')
+    let mapOption ={
+        center: new kakao.maps.LatLng(33.450701, 126.570667),
+        level: 3
+    };
+
+    let map = new kakao.maps.Map(modalMapContainer, mapOption);
+    let ps = new kakao.maps.services.Places();
+    let infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+    let markers = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        new bootstrap.Modal(mapModal, {
+            keyboard : false
+        });
+    });
+
+    document.getElementById('mapModal').addEventListener('shown.bs.modal', function (e) {
+        document.getElementById('keyword').focus();
+    });
+
+    window.onload = function () {
+        cart.forEach(item => {
+            if (item.imgSrc == null) {
+                item.imgSrc = '/asset/no-image.jpg';
+            }
+            let priceXquantity = item.price * item.quantity;
+            const list = `
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <span class="my-0 fs-2">${item.name}</span>
+                        <p class="mt-1 mb-0 text-body-secondary">${priceXquantity}</p>
+                    </div>
+                    <span class="text-body-secondary">x${item.quantity}</span>
+                </li>
+            `
+            itemListContainer.insertAdjacentHTML("afterbegin", list);
+        });
+        totalPriceElement.textContent = totalPrice;
+        cartSizeElement.textContent = cart.length.toString( );
+    };
+
+    document.getElementById('keyword').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            searchPlaces();
+        }
+    });
+
+    document.getElementById('mapModal').addEventListener('shown.bs.modal', function (e) {
+        map.relayout();
+        map.setCenter(new kakao.maps.LatLng(37.5665, 126.9780)); // 원하는 중심 좌표로 설정
+    });
+
+
+    function searchPlaces() {
+        let keyword = document.getElementById('keyword').value;
+        if (!keyword.replace(/^\s+|\s+$/g, '')) {
+            alert(msgKeyword);
+            return false;
+        }
+
+        // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
+        ps.keywordSearch( keyword, placesSearchCB);
+    }
+
+    function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+            displayPlaces(data);
+            displayPagination(pagination);
+        } else if (status === kakao.maps.services.Status.ZERO_RESULTS) {
+            alert(msgNoResult);
+        } else if (status === kakao.maps.services.Status.ERROR) {
+            alert(msgError);
+        }
+    }
+
+    function displayPlaces(places){
+        let listEl = document.getElementById('placesList'),
+            menuEl = document.getElementById('menu_wrap'),
+            fragment = document.createDocumentFragment(),
+            bounds = new kakao.maps.LatLngBounds(),
+            listStr = '';
+
+        removeAllChildNodes(listEl);
+
+        removeMarker();
+
+        for (let i = 0; i < places.length; i++) {
+            let placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
+                marker = addMarker(placePosition, i),
+                itemEl = getListItem(i, places[i]);
+
+            bounds.extend(placePosition);
+
+            (function(marker, title) {
+                kakao.maps.event.addListener(marker, 'mouseover', function() {
+                    displayInfowindow(marker, title);
+                });
+
+                kakao.maps.event.addListener(marker, 'mouseout', function() {
+                    infowindow.close();
+                });
+
+                itemEl.onmouseover =  function () {
+                    displayInfowindow(marker, title);
+                };
+
+                itemEl.onmouseout =  function () {
+                    infowindow.close();
+                };
+            })(marker, places[i].place_name);
+
+            fragment.appendChild(itemEl);
+        }
+
+        listEl.appendChild(fragment);
+        menuEl.scrollTop = 0;
+
+        map.setBounds(bounds);
+    }
+
+    function getListItem(index, places){
+        let el = document.createElement('li'),
+            itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
+                '<div class="info">' +
+                '   <h5>' + places.place_name + '</h5>';
+
+        if (places.road_address_name) {
+            itemStr += '    <span>' + places.road_address_name + '</span>' +
+                '   <span class="jibun gray">' +  places.address_name  + '</span>';
+        } else {
+            itemStr += '    <span>' +  places.address_name  + '</span>';
+        }
+
+        itemStr += '  <span class="tel">' + places.phone  + '</span>' +
+            '</div>';
+
+        el.innerHTML = itemStr;
+        el.className = 'item';
+        el.addEventListener('click', function () {
+            let address = places.road_address_name ? places.road_address_name : places.address_name;
+            document.getElementById('address').value = address;
+            mapModal.querySelector('.btn-close').click();
+            document.getElementById('xAddress').value = places.x;
+            document.getElementById('yAddress').value = places.y;
+        });
+
+        return el;
+    }
+
+    // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+    function addMarker(position, idx, title) {
+        let imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+            imageSize = new kakao.maps.Size(36, 37),  // 마커 이미지의 크기
+            imgOptions =  {
+                spriteSize : new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
+                spriteOrigin : new kakao.maps.Point(0, (idx*46)+10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+                offset: new kakao.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+            },
+            markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+            marker = new kakao.maps.Marker({
+                position: position, // 마커의 위치
+                image: markerImage
+            });
+
+        marker.setMap(map); // 지도 위에 마커를 표출합니다
+        markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+
+        return marker;
+    }
+
+    // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+    function removeMarker() {
+        for ( var i = 0; i < markers.length; i++ ) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+    }
+
+    // 검색결과 목록 하단에 페이지번호를 표시는 함수입니다
+    function displayPagination(pagination) {
+        let paginationEl = document.getElementById('pagination'),
+            fragment = document.createDocumentFragment(),
+            i;
+
+        // 기존에 추가된 페이지번호를 삭제합니다
+        while (paginationEl.hasChildNodes()) {
+            paginationEl.removeChild (paginationEl.lastChild);
+        }
+
+        for (i=1; i<=pagination.last; i++) {
+            let el = document.createElement('a');
+            el.href = "#";
+            el.innerHTML = i;
+
+            if (i===pagination.current) {
+                el.className = 'on';
+            } else {
+                el.onclick = (function(i) {
+                    return function() {
+                        pagination.gotoPage(i);
+                    }
+                })(i);
+            }
+
+            fragment.appendChild(el);
+        }
+        paginationEl.appendChild(fragment);
+    }
+
+    function displayInfowindow(marker, title) {
+        var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
+
+        infowindow.setContent(content);
+        infowindow.open(map, marker);
+    }
+
+    function removeAllChildNodes(el) {
+        while (el.hasChildNodes()) {
+            el.removeChild (el.lastChild);
+        }
+    }
+
+
+
+</script>
+</html>

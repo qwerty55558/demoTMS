@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{profile.edit}">Edit Profile</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+</head>
+<style>
+  @font-face {
+    font-family: 'Chosunilbo_myungjo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  *{
+    font-family: 'Chosunilbo_myungjo', sans-serif;
+  }
+
+  .hidden{
+    display: none;
+  }
+
+  .clickable{
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+
+</style>
+<body>
+  <main class="user-select-none">
+    <div class="d-flex justify-content-between w-50 mt-5 mx-auto">
+      <div class="fs-2" th:text="#{profile.edit}">Profile Edit</div>
+      <div><a onclick="goToProfilePage()"><i class="fa-solid fa-angle-left fa-xl clickable"></i></a></div>
+    </div>
+    <form th:object="${user}" action="/profile/edit" method="post" class="container w-50 mt-3">
+      <label for="email" th:text="#{email}">이메일</label>
+      <input type="text" th:field="*{email}" id="email" placeholder="이메일" class="form-control my-2" readonly/>
+
+      <label for="password" th:text="#{password}">비밀번호</label>
+      <input type="password" th:field="*{password}" th:errorclass="is-invalid" id="password" placeholder="비밀번호" class="form-control my-2"/>
+      <div th:errors="*{password}" class="invalid-feedback"></div>
+
+      <label id="checkPasswordLabel" for="checkPassword" class="hidden" th:text="#{password.confirm}">비밀번호 확인</label>
+      <input type="password" id="checkPassword" placeholder="비밀번호 확인" class="form-control my-2 hidden"/>
+
+      <label for="userType" th:text="#{profile.userType}">유저 타입</label>
+      <input type="text" th:field="*{userType}" id="userType" placeholder="유저 타입" class="form-control my-2" readonly/>
+
+      <label for="attribute" th:if="(*{attributeName} != null)" th:text="*{attributeName}"></label>
+      <input type="text" th:if="(*{attributeValue} != null)" th:field="*{attributeValue}" id="attribute" placeholder="유저 타입 속성" class="form-control my-2" readonly/>
+
+      <label for="firstName" th:text="#{firstName}">이름</label>
+      <input type="text" th:field="*{firstName}" id="firstName" placeholder="이름" class="form-control my-2"/>
+
+      <label for="lastName" th:text="#{lastName}">성</label>
+      <input type="text" th:field="*{lastName}" id="lastName" placeholder="성" class="form-control my-2"/>
+
+      <label for="createdAt" th:text="#{createdAt.user}">함께한 시간</label>
+      <input type="text" th:field="*{createdAt}" id="createdAt" placeholder="" class="form-control my-2" readonly/>
+
+      <label for="userTypeSelect" th:text="#{profile.userType.change}">유저 타입 변경</label>
+      <select class="form-select my-2" id="userTypeSelect" name="userTypeSelect" onclick="hideCollapse()" onchange="showCollapse()">
+        <option value="" th:text="#{profile.userType}" selected>유저 타입</option>
+        <option value="General">General</option>
+        <option value="Business">Business</option>
+        <option value="Delivery">Delivery</option>
+      </select>
+
+      <div class="collapse my-2">
+        <div id="collapseContainer" class="card card-body">
+        </div>
+      </div>
+
+      <div th:if="${#fields.hasGlobalErrors()}">
+        <p class="text-danger fw-bold fs-2" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+      </div>
+
+      <div class="w-50 mx-auto mt-2">
+        <button class="btn btn-primary w-100" type="submit">Submit</button>
+      </div>
+      <input type="hidden" th:field="*{attributeName}" />
+    </form>
+  </main>
+
+</body>
+<script th:inline="javascript">
+  const userData = /*[[${user}]]*/ {};
+  let collapse = null;
+  const inputField = document.getElementById('collapseContainer');
+
+  const msgAlert = /*[[#{profile.alert.noOrders}]]*/ '';
+
+  $(document).ready(function() {
+    $('#password').one('keydown', function(event) {
+      $("#checkPasswordLabel").removeClass("hidden").hide().fadeIn('slow');
+      $("#checkPassword").removeClass("hidden").hide().fadeIn('slow');
+    });
+    collapse = new bootstrap.Collapse(document.querySelector('.collapse'),{
+      toggle: false
+    });
+    collapse.hide();
+  });
+
+  function goToProfilePage() {
+    window.location.href = "/profile";
+  }
+
+  function hideCollapse(){
+    collapse.hide();
+  }
+
+  function showCollapse(){
+    const selectedValue = document.getElementById("userTypeSelect").value;
+    if (selectedValue !== "") {
+      switch (selectedValue) {
+        case 'General':
+          inputField.innerHTML = `
+                    <label for="generalField">GeneralField</label>
+                    <input type="text" id="generalField" name="userTypeAttribute" class="form-control my-2" value="일반 유저" readonly>
+                `;
+          break;
+        case 'Business':
+          inputField.innerHTML = `
+                    <label for="brn">Business Registration Number:</label>
+                    <input type="text" id="brn" name="userTypeAttribute" class="form-control my-2">
+                `;
+          break;
+        case 'Delivery':
+          inputField.innerHTML = `
+                    <label for="pcc">PCC:</label>
+                    <input type="text" id="pcc" name="userTypeAttribute" class="form-control my-2">
+                `;
+          break;
+        default:
+          inputField.innerHTML = "";
+          collapse.hide();
+          break;
+      }
+      const htmlSpanElement = document.createElement("span");
+      htmlSpanElement.classList.add("text-danger", "fw-bold");
+      htmlSpanElement.textContent = msgAlert;
+      inputField.append(htmlSpanElement);
+      collapse.show();
+    }
+  }
+
+
+</script>
+</html>

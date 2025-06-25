@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{employee.customerService.board}">Customer Service Board</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
+<style>
+    @font-face {
+        font-family: 'Chosunilbo_myungjo';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    *{
+        font-family: 'Chosunilbo_myungjo', sans-serif;
+    }
+
+    .clickable {
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
+    }
+
+    th{
+        white-space: nowrap;
+    }
+    td{
+        white-space: nowrap;
+    }
+</style>
+<body>
+    <main class="user-select-none">
+        <div class="w-75 mx-auto my-5">
+            <div class="justify-content-between my-5 d-flex w-75 mx-auto">
+                <div class="text-center fs-3" th:text="#{employee.customerService.board}">고객 센터</div>
+                <div><a class="clickable btn btn-secondary" th:href="@{/}"><i class="fa-solid fa-angle-left fa-xl"></i></a></div>
+            </div>
+            <div id="postsContainer" class="w-75 mx-auto">
+                <div class="d-flex justify-content-end align-items-center">
+                    <a class="clickable" th:href="@{/cs/post/edit}"><i class="fa-regular fa-square-plus fa-xl"></i></a>
+                    <form class="px-1 ps-3" action="/cs/post" method="get">
+                        <input class="form-control" type="search" th:placeholder="#{search}" placeholder="Search" aria-label="Search" name="keyword">
+                    </form>
+                    <a class="clickable" onclick="document.querySelector('form').submit();"><i class="fa-solid fa-magnifying-glass"></i></a>
+                </div>
+                <table class="table my-5">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="col-1">#</th>
+                            <th scope="col" class="col-8 text-center" th:text="#{title}">제목</th>
+                            <th scope="col" class="col-1" th:text="#{writer}">작성자</th>
+                            <th scope="col" class="col-1" th:text="#{responser}">답변자</th>
+                            <th scope="col" class="col-1" th:text="#{answered}">답변 여부</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </main>
+</body>
+<script th:inline="javascript">
+    const container = document.querySelector('tbody');
+    const pagination = document.querySelector('.pagination');
+    const searchForm = document.querySelector('.form-control');
+
+    const msgNotPosting = /*[[#{employee.customerService.noPost}]]*/ '';
+    const msgAnsweredYes = /*[[#{employee.customerService.answered.yes}]]*/ '';
+    const msgAnsweredNo = /*[[#{employee.customerService.answered.no}]]*/ '';
+    const msgNext = /*[[#{next}]]*/ '';
+    const msgPrev = /*[[#{previous}]]*/ '';
+
+    const posts = /*[[${postList}]]*/ {}; // posts는 객체로 들어옴
+
+    window.onload = () => {
+        searchForm.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.querySelector('form').submit();
+            }
+        });
+        if (!posts.content || !Array.isArray(posts.content)) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td colspan="5" class="text-center">${msgNotPosting}</td>
+            `;
+            container.appendChild(tr);
+        }else{
+            posts.content.forEach(post => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <th scope="row">${post.id}</th>
+                <td>${post.title}</td>
+                <td>${post.writer}</td>
+                <td>${post.responser}</td>
+                <td>${post.answered ? msgAnsweredYes : msgAnsweredNo}</td>
+            `;
+                tr.addEventListener('click', () => {
+                    location.href = `/cs/post/${post.id}`;
+                });
+                tr.classList.add('clickable');
+                container.appendChild(tr);
+            });
+            console.log(posts.content);
+            generatePagination();
+        }
+    }
+
+    // 페이지네이션
+    function generatePagination(){
+        pagination.innerHTML = ``;
+
+        if (!posts || typeof posts.number === 'undefined' || typeof posts.totalPages === 'undefined') {
+            console.error('page is not defined or does not have number or totalPages:', posts);
+            return;
+        }
+
+        const currentPage = posts.number + 1; // 페이지 번호는 0부터 시작하므로 +1
+        const totalPages = posts.totalPages;
+
+        //prev btn
+        const prevBtn = document.createElement('li');
+        prevBtn.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        prevBtn.innerHTML = `<a class="page-link clickable" href="#" aria-label="Previous">${msgPrev}</a>`;
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                goToPage(currentPage - 2);
+            }
+        });
+        pagination.appendChild(prevBtn);
+
+        // page numbers
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages, currentPage + 1);
+
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            pageItem.innerHTML = `<a class="page-link clickable" href="#">${i}</a>`;
+            pageItem.addEventListener('click', () => {
+                goToPage(i-1);
+            });
+            pagination.appendChild(pageItem);
+        }
+
+        // next btn
+        const nextBtn = document.createElement('li');
+        nextBtn.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextBtn.innerHTML = `<a class="page-link clickable" aria-label="Next">${msgNext}</a>`;
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                goToPage(currentPage);
+            }
+        });
+        pagination.appendChild(nextBtn);
+
+    }
+
+    function goToPage(pageNumber) {
+        const params = new URLSearchParams(window.location.search);
+        params.set('page', pageNumber);
+        location.href = `/cs/post?${params.toString()}`;
+    }
+</script>
+</html>

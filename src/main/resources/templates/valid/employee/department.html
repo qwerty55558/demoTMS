@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{employee.department.information}">Department Information</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
+<style>
+  @font-face {
+    font-family: 'Chosunilbo_myungjo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  *{
+    font-family: 'Chosunilbo_myungjo', sans-serif;
+  }
+
+  .clickable{
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+  }
+
+  .list-group-item{
+      transition: background-color 0.3s ease-in-out;
+  }
+
+  .list-group-item:hover{
+      background: #444444;
+  }
+</style>
+<body>
+  <main class="user-select-none">
+      <div class="w-75 mx-auto">
+          <div class="card my-5">
+              <div class="card-header">
+                  <h2 class="text-center">Department Information</h2>
+                  <div class="justify-content-end d-flex ms-auto mb-3 clickable" onclick="goToEmployeePage()"><i class="fa-solid fa-angle-left fa-2xl"></i></div>
+              </div>
+              <div class="card-body">
+                  <ol class="list-group row rounded-1 my-3">
+
+                  </ol>
+              </div>
+              <div class="card-footer">
+
+              </div>
+          </div>
+      </div>
+  </main>
+</body>
+<script th:inline="javascript">
+    const listGroup = document.querySelector('.list-group');
+
+    function goToEmployeePage(){
+        window.history.back();
+    }
+
+    fetch('/api/employee/department', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            Object.entries(data).forEach(([departmentName, employees]) => {
+                const safeId = departmentName.replace(/\s+/g, '');
+
+                listGroup.innerHTML += `
+                    <button class="list-group-item clickable d-flex flex-column col-md-8 mx-auto"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#${safeId}"
+                        aria-expanded="false"
+                        aria-controls="${safeId}">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <div class="m-2 me-auto">
+                                <div class="fs-4 fw-bold">${departmentName}</div>
+                            </div>
+                            <span class="fs-6 m-2 badge text-bg-secondary rounded-3">
+                                <i class="fa-solid fa-users"></i> ${employees.length}
+                            </span>
+                        </div>
+                        <div class="collapse w-100 my-2" id="${safeId}">
+                            <ul class="list-group">
+                                ${employees.map(employee => `
+                                    <li class="list-group-item">
+                                        ${employee.email} - ${employee.departmentName} : ${employee.firstName} ${employee.lastName}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    </button>
+
+                `;
+            });
+        });
+
+
+</script>
+</html>
