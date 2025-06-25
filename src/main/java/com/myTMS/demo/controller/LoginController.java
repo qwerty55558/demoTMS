@@ -149,20 +149,20 @@ public class LoginController {
     /**
      * #TODO
      */
-    @PostMapping(value = "/signup/employee")
-    public String registrationEmployee(@ModelAttribute @Valid UserSignUpDTO dto, Model model) {
-        log.info("signup = {}", dto.toString());
-
-        if (userService.signUpUser(dto) && redisService.getData(dto.getEmail(), RedisConst.AUTH.get("userSignUpDTO")).equals(StatusCode.OK.get())) {
-            log.info("성공");
-            redisService.deleteDataByString(dto.getEmail(),RedisConst.AUTH.get("userSignUpDTO"));
-            redisService.deleteDataByString(dto.getEmail(),RedisConst.EMAIL.get("userSignUpDTO"));
-        } else {
-            log.info("실패");
-        }
-        HomeController.homeEmptyObjectInclude(model);
-        return "home";
-    }
+//    @PostMapping(value = "/signup/employee")
+//    public String registrationEmployee(@ModelAttribute @Valid UserSignUpDTO dto, Model model) {
+//        log.info("signup = {}", dto.toString());
+//
+//        if (userService.signUpUser(dto) && redisService.getData(dto.getEmail(), RedisConst.AUTH.get("userSignUpDTO")).equals(StatusCode.OK.get())) {
+//            log.info("성공");
+//            redisService.deleteDataByString(dto.getEmail(),RedisConst.AUTH.get("userSignUpDTO"));
+//            redisService.deleteDataByString(dto.getEmail(),RedisConst.EMAIL.get("userSignUpDTO"));
+//        } else {
+//            log.info("실패");
+//        }
+//        HomeController.homeEmptyObjectInclude(model);
+//        return "home";
+//    }
 
     /**
      * 사용자 비밀번호 찾기 요청에 사용되는 엔드포인트
