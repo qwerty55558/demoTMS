@@ -6,7 +6,6 @@ import com.myTMS.demo.dao.typeconst.Keyword;
 import com.myTMS.demo.dao.typeconst.UserType;
 import com.myTMS.demo.dto.order.OrderItemListDTO;
 import com.myTMS.demo.dto.order.OrderSearchParamDTO;
-import com.myTMS.demo.service.DepartmentService;
 import com.myTMS.demo.service.OrderService;
 import com.myTMS.demo.service.RedisService;
 import lombok.RequiredArgsConstructor;

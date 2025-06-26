@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface JPAAlarmRepository extends JpaRepository<Alarm, Long> {
     @Query("SELECT a FROM Alarm a WHERE a.userId = :userId OR a.userId = -1 ORDER BY a.createdAt DESC")
     Page<Alarm> findForUserOrGlobal(@Param("userId") Long userId, Pageable pageable);

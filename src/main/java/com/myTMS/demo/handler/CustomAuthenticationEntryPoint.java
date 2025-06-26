@@ -1,7 +1,6 @@
 package com.myTMS.demo.handler;
 
 import com.myTMS.demo.dao.typeconst.MessageType;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

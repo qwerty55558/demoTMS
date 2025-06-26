@@ -1,6 +1,5 @@
 package com.myTMS.demo.repository.interfaces;
 
-import com.myTMS.demo.dao.Alarm;
 import com.myTMS.demo.dao.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

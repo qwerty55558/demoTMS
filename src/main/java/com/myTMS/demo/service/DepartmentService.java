@@ -1,14 +1,10 @@
 package com.myTMS.demo.service;
 
 import com.myTMS.demo.dao.Department;
-import com.myTMS.demo.dao.users.Employee;
-import com.myTMS.demo.dao.users.Users;
 import com.myTMS.demo.dto.EmployeeProfileDTO;
 import com.myTMS.demo.repository.interfaces.JPADepartmentRepository;
-import com.myTMS.demo.repository.interfaces.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,17 +1,11 @@
 package com.myTMS.demo.utils;
 
 import com.myTMS.demo.constant.RedisConst;
-import com.myTMS.demo.dao.*;
-import com.myTMS.demo.dao.delivery.Delivery;
-import com.myTMS.demo.dao.typeconst.DeliveryStatus;
-import com.myTMS.demo.dao.typeconst.MessageType;
-import com.myTMS.demo.dao.typeconst.PaymentType;
+import com.myTMS.demo.dao.Department;
+import com.myTMS.demo.dao.Post;
 import com.myTMS.demo.dao.users.Employee;
-import com.myTMS.demo.dao.users.Users;
 import com.myTMS.demo.dto.EmployeeProfileDTO;
-import com.myTMS.demo.dto.user.UserCheckoutDTO;
 import com.myTMS.demo.dto.user.UserSignUpDTO;
-import com.myTMS.demo.repository.interfaces.JPADepartmentRepository;
 import com.myTMS.demo.service.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +14,6 @@ import org.hibernate.Hibernate;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.random.RandomGenerator;
 
 
 @Component
@@ -42,6 +35,8 @@ public class TestData {
 
     @PostConstruct
     public void init() throws Exception {
+        redisService.flushKeys();
+
         departmentService.createDepartment("CustomerService");
         departmentService.createDepartment("Sales");
         departmentService.createDepartment("Logistics");
@@ -116,10 +111,10 @@ public class TestData {
 
         itemService.createItem("test1", "test1", 1000);
         itemService.setCategory("test1", "stationery");
-        itemService.setImg("test1", "/asset/Truck.jpg");
+        itemService.setImg("test1", "/asset/truck.jpg");
         itemService.createItem("test2", "test2", 2000);
         itemService.setCategory("test2", "sundries");
-        itemService.setImg("test2", "/asset/Ship.jpg");
+        itemService.setImg("test2", "/asset/ship.jpg");
         itemService.createItem("test3", "test3", 3000);
         itemService.setCategory("test3", "sgrandchild");
         itemService.setImg("test3", "/asset/Airplane.webp");

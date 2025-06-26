@@ -2,7 +2,6 @@ package com.myTMS.demo.dto.order;
 
 import com.myTMS.demo.dao.typeconst.Keyword;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter

@@ -1,10 +1,7 @@
 package com.myTMS.demo.dto.order;
 
-import com.myTMS.demo.dao.Center;
-import com.myTMS.demo.dao.Item;
 import com.myTMS.demo.dao.typeconst.DeliveryStatus;
 import com.myTMS.demo.dao.typeconst.DeliveryType;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

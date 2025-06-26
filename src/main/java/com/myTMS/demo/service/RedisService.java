@@ -47,6 +47,10 @@ public class RedisService {
         }
     }
 
+    public void flushKeys(){
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
+    }
+
     public void setObjectData(String key, String hashKey , Object value) {
         try {
             String data = objectMapper.writeValueAsString(value);

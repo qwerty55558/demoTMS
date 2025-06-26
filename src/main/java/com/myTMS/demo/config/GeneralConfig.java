@@ -1,14 +1,12 @@
 package com.myTMS.demo.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.myTMS.demo.handler.MyWebSocketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Configuration
 public class GeneralConfig {

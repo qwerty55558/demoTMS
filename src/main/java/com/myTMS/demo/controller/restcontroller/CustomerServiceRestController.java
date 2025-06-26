@@ -1,9 +1,7 @@
 package com.myTMS.demo.controller.restcontroller;
 
 import com.myTMS.demo.config.security.CustomUserDetails;
-import com.myTMS.demo.dao.typeconst.UserType;
 import com.myTMS.demo.service.localrep.ChatService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

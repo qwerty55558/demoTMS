@@ -9,9 +9,8 @@ import com.myTMS.demo.dao.delivery.Delivery;
 import com.myTMS.demo.dao.delivery.OverseasDelivery;
 import com.myTMS.demo.dao.typeconst.*;
 import com.myTMS.demo.dao.users.Users;
-import com.myTMS.demo.dto.*;
+import com.myTMS.demo.dto.CartListDTO;
 import com.myTMS.demo.dto.delivery.DeliveryDistanceDTO;
-import com.myTMS.demo.dto.order.OrderDetailsDTO;
 import com.myTMS.demo.dto.order.OrderItemListDTO;
 import com.myTMS.demo.dto.order.PFSOrderDTO;
 import com.myTMS.demo.dto.user.UserCheckoutDTO;
@@ -24,12 +23,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.context.MessageSource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.*;
 

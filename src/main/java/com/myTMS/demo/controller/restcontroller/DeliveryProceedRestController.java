@@ -2,7 +2,6 @@ package com.myTMS.demo.controller.restcontroller;
 
 import com.myTMS.demo.config.security.CustomUserDetails;
 import com.myTMS.demo.constant.RedisConst;
-import com.myTMS.demo.dao.Orders;
 import com.myTMS.demo.dao.typeconst.MessageType;
 import com.myTMS.demo.dao.typeconst.UserType;
 import com.myTMS.demo.service.AlarmService;
@@ -11,9 +10,11 @@ import com.myTMS.demo.service.OrderService;
 import com.myTMS.demo.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 

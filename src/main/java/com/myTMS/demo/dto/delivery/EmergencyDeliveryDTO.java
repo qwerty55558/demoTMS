@@ -1,6 +1,5 @@
 package com.myTMS.demo.dto.delivery;
 
-import com.myTMS.demo.dao.Center;
 import com.myTMS.demo.dao.delivery.Delivery;
 import com.myTMS.demo.dao.typeconst.DeliveryStatus;
 import com.myTMS.demo.dao.typeconst.DeliveryType;

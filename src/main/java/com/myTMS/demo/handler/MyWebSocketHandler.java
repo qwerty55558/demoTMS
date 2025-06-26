@@ -2,9 +2,9 @@ package com.myTMS.demo.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myTMS.demo.config.security.CustomUserDetails;
-import com.myTMS.demo.dto.customerservice.ChatRoom;
 import com.myTMS.demo.dao.Message;
 import com.myTMS.demo.dao.typeconst.MessageType;
+import com.myTMS.demo.dto.customerservice.ChatRoom;
 import com.myTMS.demo.service.MessageService;
 import com.myTMS.demo.service.RedisService;
 import com.myTMS.demo.service.localrep.ChatService;
@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.web.socket.*;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Slf4j

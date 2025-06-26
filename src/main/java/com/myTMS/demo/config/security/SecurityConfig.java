@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -20,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -47,7 +45,7 @@ public class SecurityConfig{
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/info/**","/error/**", "/signin", "/signup", "/findpw", "api/email/**", "/home", "/", "/asset/**", "/css/**", "/js/**", "/favicon.ico")
+                        .requestMatchers("/info/**","/error/**", "/signin", "/signup", "/findpw", "/api/email/**", "/home", "/", "/asset/**", "/css/**", "/js/**", "/favicon.ico")
                         .permitAll()
                         .requestMatchers("/valid/employee/**","/sse/employee/**").hasAuthority(UserType.Employee.name())
                         .requestMatchers("/sse/general").hasAuthority(UserType.General.name())

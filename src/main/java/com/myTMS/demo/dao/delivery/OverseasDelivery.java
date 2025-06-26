@@ -1,7 +1,10 @@
 package com.myTMS.demo.dao.delivery;
 
 import com.myTMS.demo.dao.typeconst.WeightCategory;
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
