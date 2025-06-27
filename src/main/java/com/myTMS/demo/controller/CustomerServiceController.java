@@ -75,7 +75,7 @@ public class CustomerServiceController {
 
         model.addAttribute("postList", postList);
 
-        return "/valid/customerservice/csboard";
+        return "valid/customerservice/csboard";
     }
 
     /**
@@ -116,7 +116,7 @@ public class CustomerServiceController {
         } else {
             model.addAttribute("post", new Post());
         }
-        return "/valid/customerservice/csboardedit";
+        return "valid/customerservice/csboardedit";
     }
 
     /**
@@ -133,7 +133,7 @@ public class CustomerServiceController {
     public String csPostEditSubmit(@Valid @ModelAttribute(value = "post") Post post, BindingResult br, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (br.hasErrors()) {
-            return "/valid/customerservice/csboardedit";
+            return "valid/customerservice/csboardedit";
         }
 
         log.info("post = {}", post.toString());
@@ -189,7 +189,7 @@ public class CustomerServiceController {
             postService.getPost(postId).ifPresent(post -> {
                 model.addAttribute("post", post);
             });
-            return "/valid/customerservice/csboardresponse";
+            return "valid/customerservice/csboardresponse";
         }
         return "redirect:/error";
     }
@@ -208,7 +208,7 @@ public class CustomerServiceController {
             }
         }
         if (br.hasErrors()) {
-            return "/valid/customerservice/csboardresponse";
+            return "valid/customerservice/csboardresponse";
         }
 
         if (userDetails.getUserType().equals(UserType.Employee)) {

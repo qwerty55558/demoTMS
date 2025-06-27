@@ -69,6 +69,21 @@ public class UserService {
         }
     }
 
+    public boolean signUpAdmin(UserSignUpDTO dto){
+        Optional<Users> userByEmail = userRepository.findUserByEmail(dto.getEmail());
+        if (userByEmail.isEmpty()) {
+            String encode = encoder.encode(dto.getPw());
+            Admin build = new Admin.AdminUserBuilder()
+                    .email(dto.getEmail())
+                    .password(encode)
+                    .build();
+            userRepository.createUser(build);
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     @Transactional(readOnly = true)
     public Optional<Users> findById(Long id) {
         return userRepository.findUserById(id);

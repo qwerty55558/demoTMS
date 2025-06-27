@@ -72,7 +72,7 @@ public class ProfileController {
             model.addAttribute("user", userProfileDTO);
         });
 
-        return "/valid/profile/profile";
+        return "valid/profile/profile";
     }
 
     /**
@@ -188,6 +188,6 @@ public class ProfileController {
             }
             model.addAttribute("user", userEditProfileDTO);
         });
-        return "/valid/profile/edit";
+        return "valid/profile/edit";
     }
 }

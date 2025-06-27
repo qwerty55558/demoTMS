@@ -86,7 +86,10 @@ public class TestData {
         userSignUpDTO2.setEmail("test11@test.com");
         userSignUpDTO2.setPw("testtest1!");
         userService.signUpUser(userSignUpDTO2);
-
+        UserSignUpDTO userSignUpDTO1 = new UserSignUpDTO();
+        userSignUpDTO1.setEmail("admin@test.com");
+        userSignUpDTO1.setPw("testtest1!");
+        userService.signUpAdmin(userSignUpDTO1);
 
         categoryService.createCategory("sundries");
         categoryService.createCategory("clothes");

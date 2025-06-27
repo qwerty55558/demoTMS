@@ -71,7 +71,7 @@ public class OrderController {
         Payment payment = new Payment();
         model.addAttribute("payment", payment);
 
-        return "/valid/checkout";
+        return "valid/checkout";
     }
 
     /**
@@ -99,7 +99,7 @@ public class OrderController {
             log.error("Error parsing order data from Redis: {}", e.getMessage());
         }
 
-        return "/valid/profile/orders";
+        return "valid/profile/orders";
     }
 
     /**
@@ -113,7 +113,7 @@ public class OrderController {
         if (br.hasErrors()) {
             cartListing(model, cartService.getCart(userDetails.getUserId()));
             log.info("errors = {}", br.getAllErrors());
-            return "/valid/checkout";
+            return "valid/checkout";
         }
 
         log.info("userCheckoutDTO = {}", userCheckoutDTO.toString());
@@ -123,7 +123,7 @@ public class OrderController {
         DeliveryDistanceDTO distance = deliveryService.getDistance(x, y, closestCenter);
         if (distance == null) {
             br.reject("Delivery.error", messageSource.getMessage("Delivery.error", null, Locale.getDefault()) );
-            return "/valid/checkout";
+            return "valid/checkout";
         }
         Cart cart = cartService.getCart(userDetails.getUserId());
         Optional<Orders> optOrders = orderService.createOrder(cart);

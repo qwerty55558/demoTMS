@@ -45,7 +45,7 @@ public class AdminController {
         String objectData = redisService.getObjectData(RedisConst.DASHBOARD_CACHE_KEY.name());
         ChartDataDTO chartDataDTO = objectMapper.readValue(objectData, ChartDataDTO.class);
         model.addAttribute("chartData", chartDataDTO);
-        return "/valid/admin/home";
+        return "valid/admin/home";
     }
 
     @GetMapping("/department")
